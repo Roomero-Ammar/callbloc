@@ -3,9 +3,9 @@ import 'package:dio/dio.dart';
 import '../../constants/app_strings.dart';
 
 class CharactersWebService {
- late Dio dio;
+  late Dio dio;
 
- CharactersWebService() {
+  CharactersWebService() {
     BaseOptions options = BaseOptions(
       baseUrl: baseUrl,
       receiveDataWhenStatusError: true,
@@ -15,12 +15,11 @@ class CharactersWebService {
     dio = Dio(options);
   }
 
-
   Future<List<dynamic>> getAllCharacters() async {
     try {
       Response response = await dio.get('character');
-      print(response.data.toString());
-      return response.data;
+      // Extract the list of characters from the 'results' key
+      return response.data['results'] as List<dynamic>;
     } catch (e) {
       print('Error fetching characters: $e');
       return []; // Return an empty list in case of an error

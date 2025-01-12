@@ -1,68 +1,39 @@
-import 'package:callbloc/constants/my_colors.dart';
 import 'package:flutter/material.dart';
 
-class AppBarActions extends StatefulWidget {
-  @override
-  AppBarActionsState createState() => AppBarActionsState();
-}
+class AppBarActions extends StatelessWidget {
+  final bool isSearching;
+  final VoidCallback startSearch;
+  final VoidCallback stopSearching;
 
-class AppBarActionsState extends State<AppBarActions> {
-  bool isSearching = false;
-  final TextEditingController searchTextController = TextEditingController();
-
-  void startSearch() {
-    ModalRoute.of(context)!
-        .addLocalHistoryEntry(LocalHistoryEntry(onRemove: stopSearching));
-    setState(() {
-      isSearching = true;
-    });
-  }
-
-  void stopSearching() {
-    clearSearch();
-    setState(() {
-      isSearching = false;
-    });
-  }
-
-  void clearSearch() {
-    searchTextController.clear();
-  }
+  AppBarActions({
+    required this.isSearching,
+    required this.startSearch,
+    required this.stopSearching,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: buildAppBarActions(),
+      children: isSearching
+          ? [
+              // IconButton(
+              //   onPressed: () {
+              //     Navigator.pop(context);
+              //     stopSearching();
+              //   },
+              //   icon: Icon(Icons.arrow_back, color: Colors.grey),
+              // ),
+              IconButton(
+                onPressed: stopSearching,
+                icon: Icon(Icons.clear, color: Colors.grey),
+              ),
+            ]
+          : [
+              IconButton(
+                onPressed: startSearch,
+                icon: Icon(Icons.search, color: Colors.grey),
+              ),
+            ],
     );
-  }
-
-  List<Widget> buildAppBarActions() {
-    // todo : If I search show the icon to be able to back
-    if (isSearching) {
-      return [
-        IconButton(
-          onPressed: () {
-            clearSearch(); // Clear the search text
-            Navigator.pop(context); // Optionally close the search
-          },
-          icon: Icon(Icons.clear, color: MyColors.myGrey),
-        ),
-      ];
-    } 
-    else {
-          // todo : If I not search show the icon to be able to search
-
-      return [
-        IconButton(
-          onPressed: startSearch, // Start the search
-          icon: Icon(
-            Icons.search,
-            color: MyColors.myGrey
-          ),
-        ),
-      ];
-    }
-
-
   }
 }

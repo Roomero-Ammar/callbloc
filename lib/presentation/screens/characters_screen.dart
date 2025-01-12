@@ -4,6 +4,7 @@ import 'package:callbloc/manager/cubit/characters_cubit.dart';
 import 'package:callbloc/presentation/widgets/app_bar_action.dart';
 import 'package:callbloc/presentation/widgets/app_bar_title_widget.dart';
 import 'package:callbloc/presentation/widgets/build_search_field.dart';
+import 'package:callbloc/presentation/widgets/search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,6 +19,7 @@ class CharactersScreen extends StatefulWidget {
 
 class _CharactersScreenState extends State<CharactersScreen> {
   List<Character> allCharacters = [];
+   List<Character> searchedForCharacters = [];
   final searchTextController = TextEditingController();
   bool isSearching = false;
 
@@ -25,6 +27,14 @@ class _CharactersScreenState extends State<CharactersScreen> {
   void initState() {
     super.initState();
     BlocProvider.of<CharactersCubit>(context).getAllCharacters();
+  }
+
+  void addSearchedForItemsToSearchedList(String searchedCharacter) {
+    setState(() {
+      searchedForCharacters = allCharacters.where((character) {
+        return character.name?.toLowerCase().contains(searchedCharacter.toLowerCase()) ?? false;
+      }).toList();
+    });
   }
 
   void _startSearch() {
@@ -43,6 +53,9 @@ class _CharactersScreenState extends State<CharactersScreen> {
 
   void _clearSearch() {
     searchTextController.clear();
+    setState(() {
+      searchedForCharacters = [];
+    });
   }
 
   Widget buildBlocWidget() {
@@ -50,7 +63,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
       builder: (context, state) {
         if (state is CharactersLoaded) {
           allCharacters = state.characters;
-          return buildLoadedListWidgets(allCharacters: allCharacters);
+          return buildLoadedListWidgets(allCharacters: isSearching ? searchedForCharacters : allCharacters);
         } else {
           return CircularProgressIndicator(
             color: MyColors.myYellow,
@@ -65,7 +78,12 @@ class _CharactersScreenState extends State<CharactersScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: MyColors.myYellow,
-        title: isSearching ? BuildSearchField() : AppBarTitle(),
+        title: isSearching
+            ? BuildSearchField(
+                searchTextController: searchTextController,
+                onChanged: addSearchedForItemsToSearchedList,
+              )
+            : AppBarTitle(),
         actions: [
           AppBarActions(
             isSearching: isSearching,

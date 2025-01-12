@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../constants/my_colors.dart';
 
-class BuildSearchField extends StatelessWidget {
+class SearchField extends StatelessWidget {
   final TextEditingController searchTextController;
   final Function(String) onChanged;
 
-  const BuildSearchField({
+  const SearchField({
     Key? key,
     required this.searchTextController,
     required this.onChanged,

@@ -1,4 +1,5 @@
 import 'package:callbloc/constants/app_strings.dart';
+import 'package:callbloc/data/models/characters/characters.dart';
 import 'package:callbloc/data/repo/characters_repo.dart';
 import 'package:callbloc/data/web_service/characters_web_service.dart';
 import 'package:callbloc/manager/cubit/characters_cubit.dart';
@@ -28,7 +29,8 @@ class AppRouter {
                 ));
 
       case characterDetailsScreen:
-        return MaterialPageRoute(builder: (_) => CharacterDetailsScreen());
+      final character = settings.arguments as Character;
+        return MaterialPageRoute(builder: (_) => CharacterDetailsScreen(character: character,));
     }
   }
 }
